@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "rootDir": "api",
+        "strict": true,
+        "target": "esnext",
+    }
+}
