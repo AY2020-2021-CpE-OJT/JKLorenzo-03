@@ -70,8 +70,7 @@ class PBManager extends StatelessWidget {
                     final lnameNotEmpty = _lname.text.length > 0;
                     final pnumNotEmpty = _pnum.text.length == 9;
                     if (fnameNotEmpty && lnameNotEmpty && pnumNotEmpty) {
-                      DB.upsert(
-                          new PBData(_fname.text, _lname.text, [_pnum.text]));
+                      DB.upsert(PBData(_fname.text, _lname.text, [_pnum.text]));
                     } else {
                       print('$fnameNotEmpty $lnameNotEmpty $pnumNotEmpty');
                     }
