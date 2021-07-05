@@ -3,7 +3,7 @@ import mongodb, { Db } from "mongodb";
 import { PBData } from "./structures/PBData";
 
 const uri = process.env.URI!;
-const port = 3000;
+const port = process.env.PORT!;
 
 const app = express().use(express.json());
 const client = new mongodb.MongoClient(uri, {
@@ -12,7 +12,7 @@ const client = new mongodb.MongoClient(uri, {
 });
 
 console.log(`Listening to ${port}`);
-await app.listen(3000);
+await app.listen(port);
 
 console.log(`Connecting to: ${uri}`);
 await client.connect();
