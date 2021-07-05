@@ -1,12 +1,16 @@
 import '../structures/PBData.dart';
+import '../managers/API.dart';
 
-final Map<String, PBData> _phonebook = Map();
+var _updated = true;
+Map<String, PBData> _phonebook = Map();
 
 class DB {
-  static upsert(PBData data) {
-    final this_key = '${data.last_name}_${data.first_name}';
+  static String _generateKey(PBData data) {
+    return '${data.last_name}_${data.first_name}';
+  }
 
-    _phonebook.update(this_key, (value) {
+  static PBData _update(PBData data) {
+    return _phonebook.update(_generateKey(data), (value) {
       value.phone_numbers.add(data.phone_numbers.first);
       return value;
     }, ifAbsent: () {
@@ -14,7 +18,28 @@ class DB {
     });
   }
 
-  static List<PBData> pull() {
+  static contains(String key) {
+    if (_phonebook.containsKey(key)) return true;
+    return false;
+  }
+
+  static upsert(PBData data) async {
+    final exists = contains(_generateKey(data));
+    final this_data = _update(data);
+    final similar = this_data.equals(data);
+    if (!exists || !similar) {
+      await API.upsert(this_data);
+      _updated = true;
+    }
+  }
+
+  static Future<List<PBData>> fetchAll() async {
+    if (_updated) {
+      final updated = await API.fetch();
+      _phonebook = Map();
+      updated.forEach((data) => _update(data));
+      _updated = false;
+    }
     return [..._phonebook.values];
   }
 }
