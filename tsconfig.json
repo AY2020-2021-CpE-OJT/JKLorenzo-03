@@ -4,6 +4,7 @@
         "module": "esnext",
         "moduleResolution": "node",
         "rootDir": "api",
+        "outDir": "dist",
         "strict": true,
         "target": "esnext",
     }
