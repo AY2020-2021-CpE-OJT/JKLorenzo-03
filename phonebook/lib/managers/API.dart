@@ -9,12 +9,10 @@ final Map<String, String> header = {
 
 class API {
   static upsert(PBData data) async {
-    print('posting');
     await post(uri, body: jsonEncode(data.toJSON()), headers: header);
   }
 
   static Future<List<PBData>> fetch() async {
-    print('getting');
     Response response = await get(uri);
     if (response.statusCode != 200) return [];
     List<dynamic> body = jsonDecode(response.body);
