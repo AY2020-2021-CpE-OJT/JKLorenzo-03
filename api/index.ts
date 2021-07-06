@@ -1,5 +1,5 @@
 import express from "express";
-import mongodb, { Db } from "mongodb";
+import mongodb from "mongodb";
 import { PBData } from "./structures/PBData";
 
 const uri = process.env.URI!;
@@ -23,7 +23,7 @@ app.get("/api/contacts", async (req, res) => {
   console.log("GET");
   try {
     const data = await db
-      ?.collection("contacts")
+      .collection("contacts")
       .find()
       .sort({ first_name: 1, last_name: 1 })
       .toArray();
@@ -39,7 +39,7 @@ app.post("/api/contacts", async (req, res) => {
   console.log("POST");
   try {
     const data: PBData = req.body;
-    await db?.collection("contacts").updateOne(
+    await db.collection("contacts").updateOne(
       { first_name: data.first_name, last_name: data.last_name },
       {
         $set: {

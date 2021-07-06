@@ -35,9 +35,9 @@ class DB {
 
   static Future<List<PBData>> fetchAll() async {
     if (_updated) {
-      final updated = await API.fetch();
+      final new_data = await API.fetch();
       _phonebook = Map();
-      updated.forEach((data) => _update(data));
+      new_data.forEach((data) => _update(data));
       _updated = false;
     }
     return [..._phonebook.values];

@@ -18,8 +18,7 @@ class API {
     Response response = await get(uri);
     if (response.statusCode != 200) return [];
     List<dynamic> body = jsonDecode(response.body);
-    List<PBData> data =
-        body.map((dynamic data) => PBData.fromJson(data)).toList();
+    List<PBData> data = body.map((data) => PBData.fromJson(data)).toList();
     return data;
   }
 }

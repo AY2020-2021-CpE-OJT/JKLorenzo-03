@@ -71,8 +71,6 @@ class PBManager extends StatelessWidget {
                     final pnumNotEmpty = _pnum.text.length == 9;
                     if (fnameNotEmpty && lnameNotEmpty && pnumNotEmpty) {
                       DB.upsert(PBData(_fname.text, _lname.text, [_pnum.text]));
-                    } else {
-                      print('$fnameNotEmpty $lnameNotEmpty $pnumNotEmpty');
                     }
                   },
                   child: const Text("Add to list"))
