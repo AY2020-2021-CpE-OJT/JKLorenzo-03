@@ -27,8 +27,8 @@ app.get("/api/contacts", async (req, res) => {
       .find()
       .sort({ first_name: 1, last_name: 1 })
       .toArray();
+    await res.json(data);
     console.log(data);
-    await res.json(data ?? []);
   } catch (error) {
     console.error(error);
     await res.status(error.code ?? 400).send(String(error));
@@ -39,17 +39,23 @@ app.post("/api/contacts", async (req, res) => {
   console.log("POST");
   try {
     const data: PBData = req.body;
-    await db.collection("contacts").updateOne(
-      { first_name: data.first_name, last_name: data.last_name },
-      {
-        $set: {
-          first_name: data.first_name,
-          last_name: data.last_name,
-          phone_numbers: data.phone_numbers,
-        } as PBData,
-      },
-      { upsert: true }
-    );
+    const id = `${data.first_name.toLowerCase()}_${data.last_name.toLowerCase()}`;
+    if (data.phone_numbers.length > 0) {
+      await db.collection("contacts").updateOne(
+        { _id: id },
+        {
+          $set: {
+            first_name: data.first_name,
+            last_name: data.last_name,
+            phone_numbers: data.phone_numbers,
+          } as PBData,
+        },
+        { upsert: true }
+      );
+    } else {
+      await db.collection("contacts").findOneAndDelete({ _id: id });
+    }
+    await res.send("OK");
     console.log(data);
   } catch (error) {
     console.error(error);
