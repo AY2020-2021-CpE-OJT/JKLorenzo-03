@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import './PBViewer.dart';
 import '../helpers/DB.dart';
 import '../structures/PBData.dart';
@@ -27,8 +28,9 @@ class PBManager extends StatelessWidget {
                 }),
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+        body: Center(
+            child: Padding(
+          padding: const EdgeInsets.all(8),
           child: Column(
             children: [
               TextField(
@@ -64,18 +66,42 @@ class PBManager extends StatelessWidget {
                 maxLengthEnforcement: MaxLengthEnforcement.enforced,
                 keyboardType: TextInputType.number,
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    final fnameNotEmpty = _fname.text.length > 0;
-                    final lnameNotEmpty = _lname.text.length > 0;
-                    final pnumNotEmpty = _pnum.text.length == 9;
-                    if (fnameNotEmpty && lnameNotEmpty && pnumNotEmpty) {
-                      DB.upsert(PBData(_fname.text, _lname.text, [_pnum.text]));
-                    }
-                  },
-                  child: const Text("Add to list"))
+              SizedBox(
+                width: 300,
+                height: 50,
+                child: ElevatedButton(
+                    onPressed: () async {
+                      final fnameNotEmpty = _fname.text.length > 0;
+                      final lnameNotEmpty = _lname.text.length > 0;
+                      final pnumNotEmpty = _pnum.text.trim().length == 9;
+                      if (fnameNotEmpty && lnameNotEmpty && pnumNotEmpty) {
+                        final this_data = PBData(_fname.text.trim(),
+                            _lname.text.trim(), [_pnum.text]);
+                        String update_message = "Phone Number Added";
+                        if (DB.contains(this_data)) {
+                          update_message = "Phone Number Removed";
+                        }
+                        await DB.upsert(this_data);
+                        Fluttertoast.showToast(
+                            msg: update_message,
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            fontSize: 16.0);
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "Invalid Input",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            fontSize: 16.0);
+                      }
+                    },
+                    child: const Text(
+                      "Update Contact",
+                      style: const TextStyle(fontSize: 18),
+                    )),
+              )
             ],
           ),
-        ));
+        )));
   }
 }
